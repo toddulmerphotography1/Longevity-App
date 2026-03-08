@@ -3,227 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Best Life Master 97.0</title>
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
+    <title>Best Life 132.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #020617; color: #f8fafc; font-family: -apple-system, sans-serif; overflow-x: hidden; }
+        body { background-color: #020617; color: #f8fafc; font-family: sans-serif; overflow-x: hidden; }
         .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .btn-active:active { transform: scale(0.95); transition: 0.1s; }
-        .gradient-text { background: linear-gradient(90deg, #4ade80, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .ring-container { position: relative; width: 85px; height: 85px; display: flex; align-items: center; justify-content: center; }
-        svg { transform: rotate(-90deg); width: 85px; height: 85px; }
-        circle { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ring-container { position: relative; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; margin: auto; }
+        svg { transform: rotate(-90deg); width: 70px; height: 70px; }
+        circle { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease-in-out; }
         .bg-circle { stroke: rgba(255,255,255,0.05); }
-        .ring-label { position: absolute; font-size: 11px; font-weight: 900; text-align: center; line-height: 1.1; }
-        #warning-modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 3000; padding: 2rem; align-items: center; justify-content: center; }
-        .warning-box { background: #0f172a; border: 4px solid #ef4444; padding: 2.5rem; border-radius: 2.5rem; text-align: center; max-width: 450px; box-shadow: 0 0 40px rgba(239, 68, 68, 0.5); }
-        #sodium-bar { display: none; position: fixed; top: 0; left: 0; width: 100%; background: #ef4444; color: white; text-align: center; padding: 10px; font-weight: 900; font-size: 12px; z-index: 2000; letter-spacing: 1px; animation: pulse-bg 2s infinite; }
-        @keyframes pulse-bg { 0% { opacity: 0.9; } 50% { opacity: 1; background: #b91c1c; } 100% { opacity: 0.9; } }
+        #warning-modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); z-index: 9999; padding: 2rem; align-items: center; justify-content: center; }
+        .warning-box { background: #0f172a; border: 4px solid #ef4444; padding: 2rem; border-radius: 2rem; text-align: center; max-width: 450px; }
+        #sodium-bar { display: none; position: fixed; top: 0; left: 0; width: 100%; background: #ef4444; color: white; text-align: center; padding: 10px; font-weight: 900; font-size: 11px; z-index: 5000; letter-spacing: 1px; }
+        .praise-glow { border: 2px solid #4ade80 !important; box-shadow: 0 0 15px rgba(74, 222, 128, 0.4); }
+        .alert-glow { border: 2px solid #ef4444 !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
     </style>
 </head>
-<body class="p-4 pt-16 pb-32">
+<body class="p-4 pt-14 pb-32">
 
-    <div id="sodium-bar" class="uppercase text-white">
-        <i class="fa-solid fa-triangle-exclamation mr-2"></i> Sodium Overload (>2,300mg) <i class="fa-solid fa-triangle-exclamation ml-2"></i>
-    </div>
+    <div id="sodium-bar" class="uppercase">⚠️ SODIUM OVERLOAD DETECTED (>2,300mg)</div>
 
     <div id="warning-modal">
         <div class="warning-box">
-            <i id="warning-icon" class="fa-solid fa-triangle-exclamation text-6xl text-red-600 mb-4 animate-pulse"></i>
-            <h2 id="warning-title" class="text-2xl font-black mb-2 uppercase text-white tracking-tighter">Clinical Alert</h2>
-            <p id="warning-body" class="text-slate-200 font-bold mb-8 text-lg leading-tight"></p>
-            <button onclick="closeWarning()" class="bg-red-600 text-white px-12 py-4 rounded-full font-black uppercase shadow-lg btn-active tracking-widest">Acknowledge Risk</button>
+            <i class="fa-solid fa-triangle-exclamation text-5xl text-red-600 mb-4 animate-pulse"></i>
+            <h2 id="warning-title" class="text-xl font-black text-white mb-2 uppercase italic">Clinical Alert</h2>
+            <p id="warning-body" class="text-slate-200 mb-6 font-bold leading-snug"></p>
+            <button onclick="document.getElementById('warning-modal').style.display='none'" class="bg-red-600 text-white w-full py-4 rounded-xl font-black uppercase">Acknowledge</button>
         </div>
     </div>
 
-    <div class="flex justify-between items-center mb-6 pt-4 px-2">
-        <h1 class="text-3xl font-black gradient-text italic uppercase tracking-tighter leading-none">Best Life</h1>
-        <button onclick="exportFullAuditPDF()" class="bg-blue-600 text-white text-[10px] px-5 py-2 rounded-full font-bold uppercase btn-active shadow-lg"><i class="fa-solid fa-file-medical mr-1"></i> Full Clinical Audit</button>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-black text-green-400 italic uppercase">Best Life</h1>
+        <button onclick="generateAuditPDF()" class="bg-blue-600 text-white text-[10px] px-5 py-2 rounded-full font-bold uppercase active:scale-95 shadow-lg">Audit PDF</button>
     </div>
 
-    <div class="glass rounded-[3rem] p-8 text-center mb-8 border-b-4 border-green-500/20 shadow-2xl">
-        <div id="total-clock" class="text-7xl font-black text-white tracking-tighter">0</div>
-        <div class="text-green-400 font-bold text-[10px] uppercase tracking-widest mt-2 italic">Longevity Minutes Bank</div>
+    <div class="glass rounded-[2rem] p-6 text-center mb-6 border-b-4 border-green-500/20 shadow-2xl">
+        <div id="total-clock" class="text-6xl font-black text-white">0</div>
+        <div class="text-[9px] uppercase tracking-widest mt-1 opacity-70 italic">Longevity Bank (Mins)</div>
     </div>
 
-    <div class="grid grid-cols-4 gap-2 mb-8">
-        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-na" stroke="#ef4444" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-red-400"><span id="val-na">0</span><br><span class="text-[7px] font-black uppercase">Na</span></div></div></div>
-        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-k" stroke="#22c55e" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-green-400"><span id="val-k">0</span><br><span class="text-[7px] font-black uppercase">K</span></div></div></div>
-        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-fib" stroke="#3b82f6" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-blue-400"><span id="val-fib">0</span><br><span class="text-[7px] font-black uppercase">Fib</span></div></div></div>
-        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-mi" stroke="#eab308" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-yellow-400"><span id="val-mi">0.00</span><br><span class="text-[7px] font-black uppercase">Mi</span></div></div></div>
+    <div class="grid grid-cols-4 gap-1 mb-8 text-center">
+        <div class="ring-container"><svg><circle cx="35" cy="35" r="30" class="bg-circle"></circle><circle id="ring-na" stroke="#ef4444" stroke-dasharray="188" stroke-dashoffset="188" cx="35" cy="35" r="30"></circle></svg><div class="absolute text-[8px] font-black"><span id="txt-na">0</span><br>Na</div></div>
+        <div class="ring-container"><svg><circle cx="35" cy="35" r="30" class="bg-circle"></circle><circle id="ring-k" stroke="#22c55e" stroke-dasharray="188" stroke-dashoffset="188" cx="35" cy="35" r="30"></circle></svg><div class="absolute text-[8px] font-black"><span id="txt-k">0</span><br>K</div></div>
+        <div class="ring-container"><svg><circle cx="35" cy="35" r="30" class="bg-circle"></circle><circle id="ring-fib" stroke="#3b82f6" stroke-dasharray="188" stroke-dashoffset="188" cx="35" cy="35" r="30"></circle></svg><div class="absolute text-[8px] font-black"><span id="txt-fib">0</span><br>Fib</div></div>
+        <div class="ring-container"><svg><circle cx="35" cy="35" r="30" class="bg-circle"></circle><circle id="ring-mi" stroke="#eab308" stroke-dasharray="188" stroke-dashoffset="188" cx="35" cy="35" r="30"></circle></svg><div class="absolute text-[8px] font-black"><span id="txt-mi">0.0</span><br>Mi</div></div>
     </div>
 
-    <div class="glass rounded-[2rem] p-5 mb-8 border border-white/10 shadow-2xl">
+    <div id="coach-container" class="glass rounded-[2rem] p-5 mb-6 border border-white/10 transition-all">
         <div class="flex gap-2 mb-4">
-            <input type="text" id="meal-input" placeholder="85/55, 180/120, Tylenol..." class="w-full bg-slate-900 rounded-2xl p-4 text-sm outline-none text-white shadow-inner focus:border-green-500 transition-all">
-            <button onclick="masterProcess()" class="bg-green-500 text-black px-6 rounded-2xl font-black btn-active"><i class="fa-solid fa-bolt-lightning text-xl"></i></button>
+            <input type="text" id="main-input" placeholder="Salad, 5k steps, Cigarette..." class="w-full bg-slate-900 rounded-xl p-4 text-sm outline-none text-white shadow-inner">
+            <button onclick="processCommand()" class="bg-green-500 text-black px-6 rounded-xl font-black active:scale-90"><i class="fa-solid fa-bolt"></i></button>
         </div>
-        <div id="ai-status" class="text-[12px] text-slate-200 leading-relaxed font-medium">
-            <span class="text-green-500 font-black uppercase text-[10px] block mb-1 tracking-wider">Coach</span> Clinical Auditor Unified.
+        <div class="flex items-start gap-4 p-3 bg-slate-950/50 rounded-xl border border-white/5">
+            <div class="text-green-500 mt-1 text-xl"><i class="fa-solid fa-user-doctor"></i></div>
+            <div class="text-[12px] text-slate-200 leading-snug">
+                <span id="coach-tag" class="text-green-500 font-black uppercase text-[9px] block mb-1 tracking-widest">Coach Status</span>
+                <span id="coach-text">Stabilized. Monitoring carcinogen and sodium exposure.</span>
+            </div>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 mb-6"><div class="glass p-5 rounded-2xl border-t-2 border-purple-500/30 shadow-md"><h3 class="text-[10px] font-black text-purple-400 uppercase mb-3 italic">Medication Journal</h3><div id="med-log" class="text-[11px] text-slate-300 space-y-2"></div></div></div>
-    <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="glass p-5 rounded-2xl border-t-2 border-green-500/30 shadow-md"><h3 class="text-[10px] font-black text-green-400 uppercase mb-3 italic">Fuel Log</h3><div id="food-log" class="text-[11px] text-slate-300 space-y-2"></div></div>
-        <div class="glass p-5 rounded-2xl border-t-2 border-yellow-500/30 shadow-md"><h3 class="text-[10px] font-black text-yellow-400 uppercase mb-3 italic">Activity Log</h3><div id="exercise-log" class="text-[11px] text-slate-300 space-y-2"></div></div>
+    <div class="space-y-4">
+        <div class="glass p-4 rounded-xl border-l-4 border-yellow-500 shadow-md"><h3 class="text-[9px] font-black text-yellow-400 uppercase mb-2">Activity Journal</h3><div id="log-exercise" class="text-[11px] space-y-1"></div></div>
+        <div class="glass p-4 rounded-xl border-l-4 border-purple-500"><h3 class="text-[9px] font-black text-purple-400 uppercase mb-2">Medication Journal</h3><div id="log-meds" class="text-[11px] space-y-1"></div></div>
+        <div class="glass p-4 rounded-xl border-l-4 border-green-500"><h3 class="text-[9px] font-black text-green-400 uppercase mb-2">Fuel Journal</h3><div id="log-food" class="text-[11px] space-y-1"></div></div>
+        <div class="glass p-4 rounded-xl border-l-4 border-blue-500"><h3 class="text-[9px] font-black text-blue-400 uppercase mb-2">Vitals & Crisis Log</h3><div id="log-vitals" class="text-[11px] space-y-1"></div></div>
     </div>
-    <div class="glass rounded-2xl p-5 mb-8 border-l-4 border-blue-500 shadow-xl"><h3 class="text-[10px] font-black text-blue-400 uppercase mb-3 italic">Vitals History</h3><div id="vitals-history" class="text-xs space-y-2 max-h-32 overflow-y-auto pr-2"></div></div>
-
-    <button onclick="nuclearReset()" class="w-full bg-slate-900/50 border border-red-900/40 text-red-600 text-[10px] font-black uppercase tracking-widest py-4 rounded-2xl btn-active mb-10 italic">Nuclear Reset</button>
 
     <script>
-        let daily = { mins: 0, na: 0, k: 0, fib: 0, mi: 0 };
-        const GOALS = { na: 2300, k: 4700, fib: 38, mi: 5.0 };
-        let vitalsHistory = [], foodHistory = [], activityHistory = [], medHistory = [], riskHistory = [];
-        
-        const part1 = "AIzaSyBRR8jMgrbW";
-        const part2 = "Ew4DEwuhQETiDKj0X_c6Nmk";
-        const KEY = part1 + part2;
+        let state = { mins: 0, na: 0, k: 0, fib: 0, mi: 0, sodiumAlertTriggered: false };
+        let history = { fuel: [], activity: [], vitals: [], meds: [], crisis: [] };
 
-        const MEDS = /mg|mcg|pill|tablet|capsule|dose|tylenol|advil|aspirin|metformin|statin|vitamin|supplement|insulin|ozempic|medicine/i;
-        const STRENGTH = /pushup|push up|situp|sit up|plank|leg lift|squat|lift|gym|bench|pullup|press/i;
-        const CARDIO = /ran|walk|hike|jog|run|step|mile|mi|cycling|bike|swimming/i;
-        const TOXINS = /mcdonald|burger king|wendy|taco|burrito|nacho|enchilada|mexican|pizza|soda|sugar|candy|ice cream|chocolate|hot dog|hotdog|sausage|bacon|chinese|soy sauce|lo mein|egg roll/i;
-        const ALCOHOL = /beer|wine|whiskey|vodka|tequila|rum|gin|alcohol|cocktail|drink|shot|liquor/i;
+        function processCommand() {
+            const input = document.getElementById('main-input');
+            const val = input.value.trim();
+            if (!val) return;
+            const low = val.toLowerCase();
+            input.value = "";
 
-        function triggerWarning(title, body, iconClass = "fa-circle-exclamation") {
-            riskHistory.push({time: new Date().toLocaleTimeString(), title, body});
-            document.getElementById('warning-title').innerText = title;
-            document.getElementById('warning-body').innerText = body;
-            document.getElementById('warning-icon').className = `fa-solid ${iconClass} text-6xl text-red-600 mb-4 animate-pulse`;
+            const cBox = document.getElementById('coach-container');
+            cBox.classList.remove('praise-glow', 'alert-glow');
+
+            // 1. SILO PRIORITY 1: VITALS (xx/xx)
+            if (val.includes('/')) {
+                const parts = val.split('/');
+                const sys = parseInt(parts[0]);
+                const dia = parseInt(parts[1]);
+                const timestamp = new Date().toLocaleTimeString();
+                
+                if (sys >= 140 || dia >= 90 || sys <= 90 || dia <= 60) {
+                    let msg = sys >= 140 ? "HYPERTENSIVE CRISIS" : "HYPOTENSIVE CRISIS";
+                    history.crisis.push({ time: timestamp, val: `${msg}: ${val}` });
+                    triggerEmergency(`${msg}: ${val}. Read clinically dangerous. Seek medical help now.`);
+                    setCoach('alert', 'EMERGENCY', 'Vascular pressure critical. Seek medical attention.', -45);
+                } else if (sys <= 120 && dia <= 80) {
+                    setCoach('praise', 'OPTIMAL VITALS', '🏆 Gold Standard! Perfect arterial flexibility confirmed.', 30);
+                } else {
+                    setCoach('alert', 'VITALS TRACKED', 'Reading noted. Monitor sodium closely.', 0);
+                }
+                history.vitals.push({ time: timestamp, val: val });
+                writeUI('log-vitals', val, (sys >= 140 || sys <= 90) ? 'text-red-500 font-bold' : 'text-green-400');
+                return;
+            }
+
+            // 2. SILO PRIORITY 2: MEDICINE
+            if (/mg|pill|tablet|dose|tylenol|aspirin|metformin|insulin|ozempic|statin|medicine|vitamin|supplement/i.test(low)) {
+                history.meds.push({ time: new Date().toLocaleTimeString(), val: val });
+                setCoach('praise', 'MEDICATION LOGGED', 'Medication discipline is the bedrock of clinical stability.');
+                writeUI('log-meds', val, 'text-purple-400');
+                return;
+            }
+
+            // 3. SILO PRIORITY 3: ACTIVITY (Fuzzy Shield)
+            if (/push\s*up|sit\s*up|pull\s*up|squat|step|walk|run|mile|mi|ran|hike|gym|lift|plank|press/i.test(low)) {
+                let num = parseFloat(val.match(/(\d+(\.\d+)?)/)?.[0] || 1);
+                let isStepOrMile = /step|walk|run|mi|mile|ran|hike/i.test(low);
+                let miles = low.includes('step') ? (num / 2000) : (isStepOrMile ? num : 0);
+                
+                state.mi += miles;
+                history.activity.push({ time: new Date().toLocaleTimeString(), val: val + (miles > 0 ? ` (${miles.toFixed(1)}mi)` : '') });
+                setCoach('praise', 'ACTIVITY LOGGED', '🏆 Strong movement! This clears arterial debris and clears the mind.', 20);
+                writeUI('log-exercise', val, 'text-yellow-400');
+                updateDials();
+                return;
+            }
+
+            // 4. SILO PRIORITY 4: CARCINOGEN & TOXICITY (Cigarettes/Alcohol/Junk)
+            if (/cigarette|smoke|smoking|tobacco|beer|wine|vodka|whiskey|shot|alcohol|taco|pizza|burger/i.test(low)) {
+                const isCig = /cigarette|smoke|smoking|tobacco/i.test(low);
+                const isDrink = /beer|wine|vodka|whiskey|shot|alcohol/i.test(low);
+                
+                if (isCig) {
+                    history.crisis.push({ time: new Date().toLocaleTimeString(), val: `CARCINOGEN EXPOSURE: ${val}` });
+                    triggerEmergency("CARCINOGEN ALERT: Tobacco exposure causes immediate arterial constriction and DNA oxidative damage. Longevity bank depleted.");
+                } else if (isDrink) {
+                    history.crisis.push({ time: new Date().toLocaleTimeString(), val: `ADDICTION RISK: ${val}` });
+                    triggerEmergency("ADDICTION RISK: Ethanol neurotoxicity hijacks dopamine pathways. Dependency risk high.");
+                }
+                
+                state.na += isCig ? 0 : 1200;
+                history.fuel.push({ time: new Date().toLocaleTimeString(), val: val, type: 'Toxic' });
+                setCoach('alert', isCig ? 'CARCINOGEN DETECTED' : (isDrink ? 'NEURO-RISK' : 'SODIUM SPIKE'), 
+                         isCig ? 'Smoking causes immediate arterial damage. Seek cessation support.' : 
+                         (isDrink ? 'Alcohol hijacks dopamine. Reset naturally.' : '⚠️ Toxic Load! High sodium spikes inflammation.'));
+                
+                updateUI(isCig ? -60 : -45, isCig ? 0 : 1200, 0, 0, 0, val, 'food', 'red');
+                updateDials();
+                return;
+            }
+
+            // 5. DEFAULT: FUEL
+            state.na += 80; state.k += 200; state.fib += 4;
+            history.fuel.push({ time: new Date().toLocaleTimeString(), val: val, type: 'Clean' });
+            setCoach('praise', 'FUEL LOGGED', `🏆 Clinical Superfuel! Nutrients in ${val} support DNA repair.`, 10);
+            writeUI('log-food', val, 'text-green-400 font-bold');
+            updateDials();
+        }
+
+        function setCoach(type, tag, msg, m = 0) {
+            state.mins += m;
+            document.getElementById('total-clock').innerText = Math.round(state.mins);
+            const cTag = document.getElementById('coach-tag');
+            const cText = document.getElementById('coach-text');
+            const cBox = document.getElementById('coach-container');
+            cBox.classList.add(type === 'praise' ? 'praise-glow' : 'alert-glow');
+            cTag.innerText = "Coach: " + tag;
+            cTag.className = (type === 'praise' ? 'text-green-400' : 'text-red-500') + " font-black uppercase text-[9px] block mb-1";
+            cText.innerText = msg;
+        }
+
+        function writeUI(id, msg, color) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById(id).innerHTML = `<div class="flex justify-between py-1 border-b border-white/5 ${color}"><span>${msg}</span><span class="text-[8px] opacity-40">${time}</span></div>` + document.getElementById(id).innerHTML;
+        }
+
+        function updateUI(m, na, k, fib, mi, item, type, color) {
+            // Internal stats update helper
+            state.mins += m;
+            document.getElementById('total-clock').innerText = Math.round(state.mins);
+            writeUI('log-food', item, color === 'red' ? 'text-red-500 font-bold' : 'text-green-400');
+        }
+
+        function updateDials() {
+            document.getElementById('ring-na').style.strokeDashoffset = 188 - (Math.min(state.na/2300, 1) * 188);
+            document.getElementById('ring-k').style.strokeDashoffset = 188 - (Math.min(state.k/4700, 1) * 188);
+            document.getElementById('ring-fib').style.strokeDashoffset = 188 - (Math.min(state.fib/38, 1) * 188);
+            document.getElementById('ring-mi').style.strokeDashoffset = 188 - (Math.min(state.mi/5, 1) * 188);
+            document.getElementById('txt-na').innerText = Math.round(state.na);
+            document.getElementById('txt-k').innerText = Math.round(state.k);
+            document.getElementById('txt-fib').innerText = Math.round(state.fib);
+            document.getElementById('txt-mi').innerText = state.mi.toFixed(1);
+            
+            if(state.na >= 2300) {
+                document.getElementById('sodium-bar').style.display = 'block';
+                if(!state.sodiumAlertTriggered) {
+                    history.crisis.push({ time: new Date().toLocaleTimeString(), val: `SODIUM TOXICITY THRESHOLD EXCEEDED` });
+                    state.sodiumAlertTriggered = true;
+                }
+            }
+        }
+
+        function triggerEmergency(msg) {
+            document.getElementById('warning-body').innerText = msg;
             document.getElementById('warning-modal').style.display = 'flex';
         }
-        function closeWarning() { document.getElementById('warning-modal').style.display = 'none'; }
 
-        async function masterProcess() {
-            const input = document.getElementById('meal-input');
-            const val = input.value.trim();
-            if(!val) return;
-            let low = val.toLowerCase();
-
-            if (MEDS.test(low)) { updateUI(0, 0, 0, 0, 0, "Medication logged.", val, 'meds'); input.value = ""; return; }
-
-            if (ALCOHOL.test(low)) {
-                let count = parseInt(val.match(/\d+/) || 1);
-                triggerWarning("Neuro-Risk Alert", `Alcohol detected (${count} serving). Ethanol increases systemic inflammation and poses a chemical dependency risk.`, "fa-wine-glass-slash");
-                updateUI(-45 * count, 0, 0, 0, 0, "Toxic load penalized.", val, 'food', 'red');
-                input.value = ""; return;
-            }
-
-            let bpMatch = val.match(/(\d{2,3})\/(\d{2,3})/);
-            if (bpMatch) {
-                let sys = parseInt(bpMatch[1]), dia = parseInt(bpMatch[2]);
-                let nums = val.match(/\b\d+\b/g) || [];
-                let hr = nums.find(n => n !== bpMatch[1] && n !== bpMatch[2]) || "--";
-                if (sys >= 180 || dia >= 120) triggerWarning("Hypertensive Crisis", `HIGH BP: ${bpMatch[0]}. High stroke risk.`, "fa-truck-medical");
-                else if (sys <= 90 || dia <= 60) triggerWarning("Hypotension Alert", `LOW BP: ${bpMatch[0]}. Organ perfusion risk.`, "fa-droplet-slash");
-                vitalsHistory.push({ time: new Date().toLocaleTimeString(), bp: bpMatch[0], hr: hr });
-                updateUI(sys < 121 && sys > 90 ? 30 : -45, 0, 0, 0, 0, "Vitals Sync.", val, 'vitals');
-                input.value = ""; return;
-            }
-
-            if (STRENGTH.test(low)) {
-                let num = parseFloat(val.match(/(\d+(\.\d+)?)/)?.[0] || 0);
-                updateUI(Math.round(num * 0.5), 0, 0, 0, 0, "Strength Activity routed.", val, 'exercise');
-                input.value = ""; return;
-            }
-            if (CARDIO.test(low) && !TOXINS.test(low)) {
-                let num = parseFloat(val.match(/(\d+(\.\d+)?)/)?.[0] || 0);
-                let mi = (low.includes('step')) ? num/2000 : num;
-                updateUI(Math.round(mi * 20), 0, 0, 0, mi, "Vascular tracked.", val, 'exercise');
-                input.value = ""; return;
-            }
-
-            if (TOXINS.test(low)) { updateUI(-45, 1800, 0, 0, 0, "Pro-inflammatory load.", val, 'food', 'red'); input.value = ""; return; }
-
-            try {
-                const prompt = `Longevity Audit: "${val}". Return JSON: {"mins":number, "na":number, "k":number, "fib":number, "mi":number, "type":"food", "msg":"string"}`;
-                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] })
-                });
-                const data = await resp.json();
-                const json = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim());
-                updateUI(json.mins, json.na, json.k, json.fib, json.mi, json.msg, val, 'food', 'green');
-            } catch (e) { updateUI(5, 50, 100, 2, 0, "Logged.", val, 'food', 'green'); }
-            input.value = "";
-        }
-
-        function updateUI(m, na, k, fib, mi, msg, item, type, color = '') {
-            daily.mins += m; daily.na += na; daily.k += k; daily.fib += fib; daily.mi += mi;
-            const time = new Date().toLocaleTimeString();
-            document.getElementById('sodium-bar').style.display = (daily.na >= GOALS.na) ? 'block' : 'none';
-            if(type === 'food') foodHistory.push({item, m, na, k, fib, time, color});
-            if(type === 'exercise') activityHistory.push({item, m, mi, time});
-            if(type === 'meds') medHistory.push({item, time});
-            document.getElementById('total-clock').innerText = Math.round(daily.mins);
-            document.getElementById('val-na').innerText = Math.round(daily.na);
-            document.getElementById('val-k').innerText = Math.round(daily.k);
-            document.getElementById('val-fib').innerText = Math.round(daily.fib);
-            document.getElementById('val-mi').innerText = daily.mi.toFixed(2);
-            updateRing('na', daily.na, GOALS.na); updateRing('k', daily.k, GOALS.k); updateRing('fib', daily.fib, GOALS.fib); updateRing('mi', daily.mi, GOALS.mi);
-            if (type !== 'vitals') {
-                const logId = type === 'meds' ? 'med-log' : (type === 'exercise' ? 'exercise-log' : 'food-log');
-                let dColor = color === 'red' ? 'text-red-500 font-black' : (color === 'green' ? 'text-green-400 font-black' : (type === 'meds' ? 'text-purple-400' : 'text-slate-300'));
-                document.getElementById(logId).innerHTML = `<div class="list-item flex justify-between py-2 font-bold text-[10px] ${dColor}"><span>${item}</span><span class="${m >= 0 ? 'text-green-400' : 'text-red-500'}">${m !== 0 ? (m > 0 ? '+' : '') + m + 'm' : time}</span></div>` + document.getElementById(logId).innerHTML;
-            } else {
-                const v = vitalsHistory[vitalsHistory.length - 1];
-                document.getElementById('vitals-history').innerHTML = `<div class="list-item flex justify-between font-bold text-xs py-1"><span class="text-blue-400 font-black">${v.bp}</span><span class="text-red-500 font-black">${v.hr} HR</span><span class="text-slate-600">${v.time}</span></div>` + document.getElementById('vitals-history').innerHTML;
-            }
-        }
-
-        function updateRing(id, val, goal) {
-            const circle = document.getElementById('ring-' + id);
-            const circ = 2 * Math.PI * 35;
-            circle.style.strokeDashoffset = circ - (Math.min(val / goal, 1) * circ);
-        }
-
-        function nuclearReset() { if (confirm("Clear all?")) location.reload(); }
-
-        function exportFullAuditPDF() {
+        function generateAuditPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             let y = 20;
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22); doc.text("FULL CLINICAL LONGEVITY AUDIT", 20, y); y += 15;
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(10); doc.text(`Daily Totals: ${daily.mins}m | Na: ${daily.na}mg | K: ${daily.k}mg | Fib: ${daily.fib}g | Mi: ${daily.mi}`, 20, y); y += 15;
+            doc.setFontSize(22); doc.setTextColor(200, 0, 0); doc.text("OFFICIAL CLINICAL AUDIT", 20, y); y += 15;
             
-            doc.setFont("helvetica", "bold"); doc.text("1. CLINICAL RISK & VITAL SUMMARY:", 20, y); y += 8;
-            doc.setFont("helvetica", "normal");
-            vitalsHistory.forEach(v => { 
-                let sys = parseInt(v.bp.split('/')[0]);
-                let dia = parseInt(v.bp.split('/')[1]);
-                let label = "NORMAL BP";
-                if(sys >= 180 || dia >= 120) label = "HYPERTENSIVE CRISIS (EMERGENCY)";
-                else if(sys >= 140 || dia >= 90) label = "HYPERTENSION STAGE 2";
-                else if(sys <= 90 || dia <= 60) label = "HYPOTENSION (LOW BP RISK)";
-                doc.text(`${v.time} | BP: ${v.bp} | HR: ${v.hr} | STATUS: ${label}`, 25, y); y += 7; 
-            }); y += 10;
-            
-            doc.setFont("helvetica", "bold"); doc.text("2. MEDICATIONS RECORD:", 20, y); y += 8;
-            doc.setFont("helvetica", "normal");
-            medHistory.forEach(m => { doc.text(`${m.time} | ${m.item}`, 25, y); y += 7; }); y += 10;
-            
-            doc.setFont("helvetica", "bold"); doc.text("3. NUTRITIONAL TOXIN LOG:", 20, y); y += 8;
-            doc.setFont("helvetica", "normal");
-            foodHistory.forEach(f => { if(f.color === 'red') { doc.text(`${f.time} | TOXIN: ${f.item} [Na Spike: ${f.na}]`, 25, y); y += 7; } }); y += 10;
-            
-            doc.setFont("helvetica", "bold"); doc.text("4. ACTIVITY & EXERCISE LOG:", 20, y); y += 8;
-            doc.setFont("helvetica", "normal");
-            activityHistory.forEach(a => { doc.text(`${a.time} | ${a.item} [Impact: +${a.m}m]`, 25, y); y += 7; }); y += 10;
-            
-            if(riskHistory.length > 0 || daily.na >= 2300) {
-                doc.setTextColor(200, 0, 0); doc.setFont("helvetica", "bold"); doc.text("5. CRITICAL RISK WARNINGS TRIGGERED:", 20, y); y += 8;
-                doc.setFont("helvetica", "normal");
-                riskHistory.forEach(r => { doc.text(`${r.time} | ${r.title}: ${r.body.substring(0, 60)}...`, 25, y); y += 7; });
-                if(daily.na >= 2300) { doc.text(`DAILY SODIUM TOXICITY: Limit of 2,300mg exceeded (${daily.na}mg).`, 25, y); y += 7; }
+            doc.setFontSize(14); doc.text("SECTION 1: CLINICAL CRISIS EVENTS", 20, y); y += 8;
+            doc.setFontSize(10); doc.setTextColor(0, 0, 0);
+            if(history.crisis.length === 0) { doc.text("No crisis recorded.", 25, y); y += 10; }
+            else { 
+                history.crisis.forEach(c => { 
+                    doc.setTextColor(200, 0, 0);
+                    doc.text(`[URGENT] ${c.time}: ${c.val}`, 25, y); y += 6;
+                });
+                y += 10;
             }
-            doc.save(`Longevity_Audit_${new Date().toLocaleDateString()}.pdf`);
+
+            doc.setTextColor(0, 0, 0);
+            const sections = [ {t: "Vitals (BP)", d: history.vitals}, {t: "Medications", d: history.meds}, {t: "Activity (Exercise)", d: history.activity}, {t: "Fuel (Nutrition)", d: history.fuel} ];
+            sections.forEach(s => {
+                doc.setFontSize(14); doc.setTextColor(0, 102, 204); doc.text(s.t, 20, y); y += 8;
+                doc.setFontSize(10); doc.setTextColor(0, 0, 0);
+                s.d.forEach(item => { doc.text(`${item.time}: ${item.val}`, 25, y); y += 6; }); y += 10;
+            });
+            doc.save(`Clinical_Audit.pdf`);
         }
     </script>
 </body>
