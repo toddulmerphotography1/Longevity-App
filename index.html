@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Best Life Master 81.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #020617; color: #f8fafc; font-family: -apple-system, sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-active:active { transform: scale(0.95); transition: 0.1s; }
+        .gradient-text { background: linear-gradient(90deg, #4ade80, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .ring-container { position: relative; width: 85px; height: 85px; display: flex; align-items: center; justify-content: center; }
+        svg { transform: rotate(-90deg); width: 85px; height: 85px; }
+        circle { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bg-circle { stroke: rgba(255,255,255,0.05); }
+        .ring-label { position: absolute; font-size: 11px; font-weight: 900; text-align: center; line-height: 1.1; }
+        #warning-modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 2000; padding: 2rem; align-items: center; justify-content: center; }
+        .warning-box { background: #0f172a; border: 4px solid #ef4444; padding: 2.5rem; border-radius: 2.5rem; text-align: center; max-width: 450px; box-shadow: 0 0 40px rgba(239, 68, 68, 0.5); }
+    </style>
+</head>
+<body class="p-4 pb-32">
+
+    <div id="warning-modal">
+        <div class="warning-box">
+            <i id="warning-icon" class="fa-solid fa-triangle-exclamation text-6xl text-red-600 mb-4 animate-pulse"></i>
+            <h2 id="warning-title" class="text-3xl font-black mb-2 uppercase text-white tracking-tighter italic">Clinical Alert</h2>
+            <p id="warning-body" class="text-slate-300 font-bold mb-8 text-lg leading-tight italic"></p>
+            <button onclick="closeWarning()" class="bg-red-600 text-white px-12 py-4 rounded-full font-black uppercase tracking-widest shadow-lg btn-active">I Acknowledge the Risk</button>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center mb-6 pt-4 px-2">
+        <h1 class="text-3xl font-black gradient-text italic uppercase tracking-tighter leading-none">Best Life</h1>
+        <button onclick="exportFullAuditPDF()" class="bg-blue-600 text-white text-[10px] px-5 py-2 rounded-full font-bold uppercase btn-active shadow-lg"><i class="fa-solid fa-file-medical mr-1"></i> Full Clinical Audit</button>
+    </div>
+
+    <div class="glass rounded-[3rem] p-8 text-center mb-8 border-b-4 border-green-500/20 shadow-2xl">
+        <div id="total-clock" class="text-7xl font-black text-white tracking-tighter">0</div>
+        <div class="text-green-400 font-bold text-[10px] uppercase tracking-widest mt-2 italic">Longevity Minutes Bank</div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-2 mb-8">
+        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-na" stroke="#ef4444" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-red-400"><span id="val-na">0</span><br><span class="text-[7px] font-black uppercase">Na</span></div></div></div>
+        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-k" stroke="#22c55e" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-green-400"><span id="val-k">0</span><br><span class="text-[7px] font-black uppercase">K</span></div></div></div>
+        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-fib" stroke="#3b82f6" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-blue-400"><span id="val-fib">0</span><br><span class="text-[7px] font-black uppercase">Fib</span></div></div></div>
+        <div class="flex flex-col items-center"><div class="ring-container"><svg><circle class="bg-circle" cx="42.5" cy="42.5" r="35"></circle><circle id="ring-mi" stroke="#eab308" stroke-dasharray="220" stroke-dashoffset="220" cx="42.5" cy="42.5" r="35"></circle></svg><div class="ring-label text-yellow-400"><span id="val-mi">0.00</span><br><span class="text-[7px] font-black uppercase">Mi</span></div></div></div>
+    </div>
+
+    <div class="glass rounded-[2rem] p-5 mb-8 border border-white/10 shadow-2xl">
+        <div class="flex gap-2 mb-4">
+            <input type="text" id="meal-input" placeholder="2 beers, 180/120, 1000 steps..." class="w-full bg-slate-900 rounded-2xl p-4 text-sm outline-none text-white shadow-inner focus:border-green-500 transition-all">
+            <button onclick="masterProcess()" class="bg-green-500 text-black px-6 rounded-2xl font-black btn-active"><i class="fa-solid fa-bolt-lightning text-xl"></i></button>
+        </div>
+        <div id="ai-status" class="flex items-start gap-4 p-4 bg-slate-950/50 rounded-2xl border border-white/5 text-[12px] text-slate-200 leading-relaxed font-medium">
+            <span class="text-green-500 font-black uppercase text-[10px] block mb-1 tracking-wider">Coach</span> All safety sieves active.
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="glass p-5 rounded-2xl border-t-2 border-green-500/30 shadow-md"><h3 class="text-[10px] font-black text-green-400 uppercase mb-3 text-white italic">Fuel Journal</h3><div id="food-log" class="text-[11px] text-slate-300 space-y-2"></div></div>
+        <div class="glass p-5 rounded-2xl border-t-2 border-yellow-500/30 shadow-md"><h3 class="text-[10px] font-black text-yellow-400 uppercase mb-3 text-white italic">Activity Journal</h3><div id="exercise-log" class="text-[11px] text-slate-300 space-y-2"></div></div>
+    </div>
+
+    <div class="glass rounded-2xl p-5 mb-8 border-l-4 border-blue-500 shadow-xl">
+        <h3 class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3 text-white">Health Log (Blood Pressure & HR)</h3>
+        <div id="vitals-history" class="text-xs space-y-2 max-h-32 overflow-y-auto pr-2"></div>
+    </div>
+
+    <button onclick="nuclearReset()" class="w-full bg-slate-900/50 border border-red-900/40 text-red-600 text-[10px] font-black uppercase tracking-widest py-4 rounded-2xl btn-active mb-10 italic"><i class="fa-solid fa-trash-can mr-2"></i> Nuclear Daily Reset</button>
+
+    <script>
+        let daily = { mins: 0, na: 0, k: 0, fib: 0, mi: 0 };
+        const GOALS = { na: 2300, k: 4700, fib: 38, mi: 5.0 };
+        let vitalsHistory = [], foodHistory = [], activityHistory = [], riskHistory = [];
+        const KEY = "AIzaSyBRR8jMgrbWEw4DEwuhQETiDKj0X_c6Nmk";
+
+        const ALCOHOL = /beer|wine|whiskey|vodka|tequila|rum|gin|alcohol|cocktail|drink/i;
+        const VASCULAR = /walk|step|run|jog|hike|bike|cycling|mi|mile/i;
+        const RESISTANCE = /pushup|situp|lift|gym|squat|bench|pullup|press/i;
+        const TOXINS = /mcdonald|taco|burger|pizza|soda|sugar|candy|ice cream|chocolate/i;
+
+        function triggerWarning(title, body, iconClass = "fa-circle-exclamation") {
+            riskHistory.push({time: new Date().toLocaleTimeString(), title, body});
+            document.getElementById('warning-title').innerText = title;
+            document.getElementById('warning-body').innerText = body;
+            document.getElementById('warning-icon').className = `fa-solid ${iconClass} text-6xl text-red-600 mb-4 animate-pulse`;
+            document.getElementById('warning-modal').style.display = 'flex';
+        }
+        function closeWarning() { document.getElementById('warning-modal').style.display = 'none'; }
+
+        async function masterProcess() {
+            const input = document.getElementById('meal-input');
+            const val = input.value.trim();
+            if(!val) return;
+            let low = val.toLowerCase();
+            document.getElementById('ai-status').innerText = "Analyzing Clinical Data...";
+
+            // 1. DUAL BP ALARM SIEVE
+            let bpMatch = val.match(/(\d{2,3})\/(\d{2,3})/);
+            if (bpMatch) {
+                let sys = parseInt(bpMatch[1]), dia = parseInt(bpMatch[2]);
+                let hrMatch = val.match(/\b\d{2,3}\b/g) || [];
+                let hr = hrMatch.find(n => n !== bpMatch[1] && n !== bpMatch[2]) || "--";
+                
+                if (sys >= 180 || dia >= 120) {
+                    triggerWarning("Hypertensive Crisis", `CRITICAL HIGH BP: ${bpMatch[0]}. Contact emergency services immediately. High risk of immediate vascular failure.`, "fa-truck-medical");
+                } else if (sys <= 90 || dia <= 60) {
+                    triggerWarning("Hypotension Alert", `LOW BLOOD PRESSURE: ${bpMatch[0]}. Risk of syncope or poor organ perfusion. Sit down and hydrate immediately.`, "fa-droplet-slash");
+                }
+
+                vitalsHistory.push({ time: new Date().toLocaleTimeString(), bp: bpMatch[0], hr: hr });
+                updateUI(sys < 121 && sys > 90 ? 30 : -45, 0, 0, 0, 0, "Vitals Captured.", val, 'vitals');
+                input.value = ""; return;
+            }
+
+            // 2. SOBRIETY SIEVE
+            if (ALCOHOL.test(low)) {
+                let countMatch = val.match(/\d+/);
+                let count = countMatch ? parseInt(countMatch[0]) : 1;
+                if (count > 1) {
+                    triggerWarning("Sobriety Alert", `Alcohol consumption detected at ${count} units. This damages arterial walls and inhibits cellular repair.`, "fa-wine-glass-slash");
+                }
+                updateUI(-45 * count, 0, 0, 0, 0, "Toxic load added. Bank reduced.", val, 'food');
+                input.value = ""; return;
+            }
+
+            // 3. VASCULAR VS RESISTANCE
+            if (VASCULAR.test(low) && !TOXINS.test(low)) {
+                let num = parseFloat(val.match(/(\d+(\.\d+)?)/)?.[0] || 0);
+                let miVal = low.includes('step') ? (num / 2000) : num;
+                updateUI(Math.round(miVal * 20), 0, 0, 0, miVal, `Cardio Logged: ${miVal.toFixed(2)} mi.`, val, 'exercise');
+                input.value = ""; return;
+            }
+            if (RESISTANCE.test(low)) {
+                let num = parseFloat(val.match(/(\d+(\.\d+)?)/)?.[0] || 0);
+                updateUI(Math.round(num * 0.5), 0, 0, 0, 0, `Strength Logged: ${num} reps.`, val, 'exercise');
+                input.value = ""; return;
+            }
+
+            // 4. TOXIN SIEVE
+            if (TOXINS.test(low)) {
+                let count = parseInt(val.match(/\d+/) || 1);
+                updateUI(-45 * count, 1200 * count, 0, 0, 0, "Inflammatory toxin recorded.", val, 'food');
+                input.value = ""; return;
+            }
+
+            // 5. AI FALLBACK
+            try {
+                const prompt = `Longevity Audit: "${val}". Return JSON: {"mins":number, "na":number, "k":number, "fib":number, "mi":number, "type":"food", "msg":"string"}`;
+                const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{parts: [{text: prompt}]}] })
+                });
+                const data = await resp.json();
+                const json = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim());
+                updateUI(json.mins, json.na, json.k, json.fib, json.mi, json.msg, val, 'food');
+            } catch (e) { updateUI(5, 50, 100, 2, 0, "Logged.", val, 'food'); }
+            input.value = "";
+        }
+
+        function updateUI(m, na, k, fib, mi, msg, item, type) {
+            daily.mins += m; daily.na += na; daily.k += k; daily.fib += fib; daily.mi += mi;
+            const time = new Date().toLocaleTimeString();
+            
+            if(type === 'food') foodHistory.push({item, m, na, k, fib, time});
+            if(type === 'exercise') activityHistory.push({item, m, mi, time});
+
+            document.getElementById('total-clock').innerText = Math.round(daily.mins);
+            document.getElementById('val-na').innerText = Math.round(daily.na);
+            document.getElementById('val-k').innerText = Math.round(daily.k);
+            document.getElementById('val-fib').innerText = Math.round(daily.fib);
+            document.getElementById('val-mi').innerText = daily.mi.toFixed(2);
+            updateRing('na', daily.na, GOALS.na);
+            updateRing('k', daily.k, GOALS.k);
+            updateRing('fib', daily.fib, GOALS.fib);
+            updateRing('mi', daily.mi, GOALS.mi);
+            
+            if (type !== 'vitals') {
+                const logId = (type === 'exercise') ? 'exercise-log' : 'food-log';
+                document.getElementById(logId).innerHTML = `<div class="list-item flex justify-between py-2 uppercase font-bold text-[10px]"><span>${item}</span><span class="${m >= 0 ? 'text-green-400' : 'text-red-400'}">${m > 0 ? '+' : ''}${m}m</span></div>` + document.getElementById(logId).innerHTML;
+            } else {
+                const v = vitalsHistory[vitalsHistory.length - 1];
+                document.getElementById('vitals-history').innerHTML = `<div class="list-item flex justify-between font-bold text-white text-xs py-1"><span class="text-blue-400 italic font-black">${v.bp}</span><span class="text-red-500">${v.hr} HR</span><span class="text-slate-600">${v.time}</span></div>` + document.getElementById('vitals-history').innerHTML;
+            }
+            document.getElementById('ai-status').innerText = msg;
+        }
+
+        function updateRing(id, val, goal) {
+            const circle = document.getElementById('ring-' + id);
+            const circ = 2 * Math.PI * 35;
+            circle.style.strokeDashoffset = circ - (Math.min(val / goal, 1) * circ);
+        }
+
+        function nuclearReset() {
+            if (confirm("Reset everything?")) location.reload();
+        }
+
+        function exportFullAuditPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 20;
+
+            doc.setFont("helvetica", "bold"); doc.setFontSize(22);
+            doc.text("FULL CLINICAL LONGEVITY AUDIT", 20, y); y += 15;
+            
+            doc.setFontSize(10); doc.setFont("helvetica", "normal");
+            doc.text(`Generated: ${new Date().toLocaleString()}`, 20, y); y += 10;
+            
+            doc.setFillColor(240, 240, 240); doc.rect(20, y, 170, 20, 'F');
+            doc.text(`Daily Totals: ${daily.mins}m Bank | Na: ${daily.na}mg | K: ${daily.k}mg | Fib: ${daily.fib}g | Miles: ${daily.mi}`, 25, y + 12);
+            y += 30;
+
+            doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("1. HEALTH LOG (VITALS)", 20, y); y += 8;
+            doc.setFontSize(9); doc.setFont("helvetica", "normal");
+            vitalsHistory.forEach(v => { doc.text(`${v.time} | BP: ${v.bp} | HR: ${v.hr} BPM`, 25, y); y += 7; });
+            y += 10;
+
+            doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("2. FUEL LOG", 20, y); y += 8;
+            doc.setFontSize(9); doc.setFont("helvetica", "normal");
+            foodHistory.forEach(f => { doc.text(`${f.time} | ${f.item}: ${f.m}m [Na: ${f.na} | K: ${f.k} | Fib: ${f.fib}]`, 25, y); y += 7; });
+            y += 10;
+
+            doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("3. ACTIVITY LOG", 20, y); y += 8;
+            doc.setFontSize(9); doc.setFont("helvetica", "normal");
+            activityHistory.forEach(a => { doc.text(`${a.time} | ${a.item}: +${a.m}m [${a.mi} miles]`, 25, y); y += 7; });
+            y += 10;
+
+            if(riskHistory.length > 0) {
+                doc.setTextColor(200, 0, 0); doc.text("4. RISK ALERTS", 20, y); y += 8;
+                riskHistory.forEach(r => { doc.text(`${r.time} | ${r.title}: ${r.body}`, 25, y); y += 7; });
+            }
+
+            doc.save("Clinical_Audit.pdf");
+        }
+    </script>
+</body>
+</html>
